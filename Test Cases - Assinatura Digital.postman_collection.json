@@ -1,0 +1,839 @@
+{
+	"info": {
+		"_postman_id": "ae7dbd71-f0bf-4da8-a7ef-30bea1849713",
+		"name": "Test Cases - Assinatura Digital",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Issue 105287",
+			"item": [
+				{
+					"name": "TC 108148",
+					"item": [
+						{
+							"name": "Autenticação",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data=JSON.parse(responseBody)\r",
+											"postman.setEnvironmentVariable(\"access-token\", data.access_token);\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{auth-x-api-key}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{auth-key}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-authorizer}}/token",
+									"host": [
+										"{{api-gateway-url}}{{route-authorizer}}"
+									],
+									"path": [
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"let response = pm.response.json();\r",
+											"\r",
+											"pm.globals.set(\"idAssinatura\", response.id);\r",
+											"pm.globals.set(\"criadoEm\", response.criadoEm);\r",
+											"pm.globals.set(\"criadoPor\", response.criadoPor);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{assinatura-x-api-key}}",
+										"type": "text"
+									},
+									{
+										"key": "access_token",
+										"value": "{{access-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CPF\": \"05397673366\",\r\n    \"FormaContatoSMS\": false,\r\n    \"FormaContatoEmail\": true,\r\n    \"EmailId\": 418,\r\n    \"ClienteId\": 5907,\r\n    \"CelularId\": 855,\r\n    \"EnderecoId\": 193026,\r\n    \"Produto\": \"70\",\r\n    \"DestinatarioNome\" : \"MATEUS IRVING VERAS COSTA\",\r\n    \"DestinatarioCPF\" : \"05397673366\",\r\n    \"DestinatarioTelefone\" : \"85999607165\",\r\n    \"Quantidade\": \"1\",\r\n    \"Frequencia\": \"Mensal\",\r\n    \"Duracao\": \"1\",\r\n    \"DiaRecebimento\": \"15\",\r\n    \"FormaRecebimento\": \"Delivery\",\r\n    \"Loja\": \"52\",\r\n    \"Usuario\": \"9008734\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-assinatura}}/assinaturas",
+									"host": [
+										"{{api-gateway-url}}{{route-assinatura}}"
+									],
+									"path": [
+										"assinaturas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cancelar",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"let response = pm.response.json();\r",
+											"pm.globals.set(\"idAssinatura\", response.id);\r",
+											"pm.globals.set(\"criadoEm\", response.criadoEm);\r",
+											"pm.globals.set(\"criadoPor\", response.criadoPor);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-api-key",
+										"type": "text",
+										"value": "{{assinatura-x-api-key}}"
+									},
+									{
+										"key": "access_token",
+										"type": "text",
+										"value": "{{access-token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Usuario\" : \"{{criadoPor}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-assinatura}}/assinaturas/{{idAssinatura}}/cancelar",
+									"host": [
+										"{{api-gateway-url}}{{route-assinatura}}"
+									],
+									"path": [
+										"assinaturas",
+										"{{idAssinatura}}",
+										"cancelar"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetById",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"\r",
+											"pm.test(\"Verifica que ocorrência contém usuário que emitiu cancelamento\", function () {\r",
+											"    pm.response.to.have.body(pm.environment.get(\"criadoPor\"));\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verifica que ocorrencia para cancelamento foi criado\", function () {\r",
+											"    pm.response.to.have.body(pm.environment.get(\"criadoEm\"));\r",
+											"});\r",
+											"\r",
+											"let response = pm.response.json();\r",
+											"console.log(pm.response.descricao);\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"type": "text",
+										"value": "{{assinatura-x-api-key}}"
+									},
+									{
+										"key": "access_token",
+										"type": "text",
+										"value": "{{access-token}}"
+									}
+								],
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-assinatura}}/assinaturaocorrencias/{{idAssinatura}}",
+									"host": [
+										"{{api-gateway-url}}{{route-assinatura}}"
+									],
+									"path": [
+										"assinaturaocorrencias",
+										"{{idAssinatura}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "TC 108142",
+					"item": [
+						{
+							"name": "Autenticação",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data=JSON.parse(responseBody)\r",
+											"postman.setEnvironmentVariable(\"access-token\", data.access_token);\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{auth-x-api-key}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{auth-key}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-authorizer}}/token",
+									"host": [
+										"{{api-gateway-url}}{{route-authorizer}}"
+									],
+									"path": [
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"let response = pm.response.json();\r",
+											"\r",
+											"pm.globals.set(\"idAssinatura\", response.id);\r",
+											"pm.globals.set(\"criadoEm\", response.criadoEm);\r",
+											"pm.globals.set(\"criadoPor\", response.criadoPor);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{assinatura-x-api-key}}",
+										"type": "text"
+									},
+									{
+										"key": "access_token",
+										"value": "{{access-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CPF\": \"05397673366\",\r\n    \"FormaContatoSMS\": true,\r\n    \"FormaContatoEmail\": false,\r\n    \"EmailId\": 418,\r\n    \"ClienteId\": 5907,\r\n    \"CelularId\": 855,\r\n    \"EnderecoId\": 193026,\r\n    \"Produto\": \"70\",\r\n    \"DestinatarioNome\" : \"MATEUS IRVING VERAS COSTA\",\r\n    \"DestinatarioCPF\" : \"05397673366\",\r\n    \"DestinatarioTelefone\" : \"85999607165\",\r\n    \"Quantidade\": \"1\",\r\n    \"Frequencia\": \"Mensal\",\r\n    \"Duracao\": \"1\",\r\n    \"DiaRecebimento\": \"15\",\r\n    \"FormaRecebimento\": \"Delivery\",\r\n    \"Loja\": \"52\",\r\n    \"Usuario\": \"9008734\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-assinatura}}/assinaturas",
+									"host": [
+										"{{api-gateway-url}}{{route-assinatura}}"
+									],
+									"path": [
+										"assinaturas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GetById",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verifica usuário\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.criadoPor).to.eql(pm.globals.get(\"criadoPor\"));\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Verifica data\", function () {\r",
+											"    var jsonData = pm.response.json();\r",
+											"    pm.expect(jsonData.criadoEm).to.eql(pm.globals.get(\"criadoEm\"));\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Localiza descrição\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"A assinatura foi criada\");\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"type": "text",
+										"value": "{{assinatura-x-api-key}}"
+									},
+									{
+										"key": "access_token",
+										"type": "text",
+										"value": "{{access-token}}"
+									}
+								],
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-assinatura}}/assinaturaocorrencias/{{idAssinatura}}",
+									"host": [
+										"{{api-gateway-url}}{{route-assinatura}}"
+									],
+									"path": [
+										"assinaturaocorrencias",
+										"{{idAssinatura}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "TC 108144",
+					"item": [
+						{
+							"name": "Autenticação",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data=JSON.parse(responseBody)\r",
+											"postman.setEnvironmentVariable(\"access-token\", data.access_token);\r",
+											"\r",
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{auth-x-api-key}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{auth-key}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-authorizer}}/token",
+									"host": [
+										"{{api-gateway-url}}{{route-authorizer}}"
+									],
+									"path": [
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"let response = pm.response.json();\r",
+											"\r",
+											"pm.globals.set(\"idAssinatura\", response.id);\r",
+											"//pm.globals.set(\"criadoEm\", response.criadoEm);\r",
+											"//pm.globals.set(\"criadoPor\", response.criadoPor);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{assinatura-x-api-key}}",
+										"type": "text"
+									},
+									{
+										"key": "access_token",
+										"value": "{{access-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CPF\": \"05397673366\",\r\n    \"FormaContatoSMS\": true,\r\n    \"FormaContatoEmail\": false,\r\n    \"EmailId\": 418,\r\n    \"ClienteId\": 5907,\r\n    \"CelularId\": 855,\r\n    \"EnderecoId\": 193026,\r\n    \"Produto\": \"70\",\r\n    \"DestinatarioNome\" : \"MATEUS IRVING VERAS COSTA\",\r\n    \"DestinatarioCPF\" : \"05397673366\",\r\n    \"DestinatarioTelefone\" : \"85999607165\",\r\n    \"Quantidade\": \"1\",\r\n    \"Frequencia\": \"Mensal\",\r\n    \"Duracao\": \"1\",\r\n    \"DiaRecebimento\": \"15\",\r\n    \"FormaRecebimento\": \"Delivery\",\r\n    \"Loja\": \"1\",\r\n    \"Usuario\": \"9008734\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-assinatura}}/assinaturas",
+									"host": [
+										"{{api-gateway-url}}{{route-assinatura}}"
+									],
+									"path": [
+										"assinaturas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-api-key",
+										"type": "text",
+										"value": "{{assinatura-x-api-key}}"
+									},
+									{
+										"key": "access_token",
+										"type": "text",
+										"value": "{{access-token}}"
+									}
+								],
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-assinatura}}/assinaturas/{{idAssinatura}}/token/75f8905f-7b17-4a32-a647-6eafe353f124",
+									"host": [
+										"{{api-gateway-url}}{{route-assinatura}}"
+									],
+									"path": [
+										"assinaturas",
+										"{{idAssinatura}}",
+										"token",
+										"75f8905f-7b17-4a32-a647-6eafe353f124"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get By Assinatura Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Localiza descrição\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"O status da assinatura foi atualizado para [Ativa]\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"type": "text",
+										"value": "{{assinatura-x-api-key}}"
+									},
+									{
+										"key": "access_token",
+										"type": "text",
+										"value": "{{access-token}}"
+									}
+								],
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-assinatura}}/assinaturaocorrencias/assinatura/{{idAssinatura}}",
+									"host": [
+										"{{api-gateway-url}}{{route-assinatura}}"
+									],
+									"path": [
+										"assinaturaocorrencias",
+										"assinatura",
+										"{{idAssinatura}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "TC 108154",
+					"item": [
+						{
+							"name": "Autenticação",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data=JSON.parse(responseBody)\r",
+											"postman.setEnvironmentVariable(\"access-token\", data.access_token);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{auth-x-api-key}}",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{auth-key}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-authorizer}}/token",
+									"host": [
+										"{{api-gateway-url}}{{route-authorizer}}"
+									],
+									"path": [
+										"token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Add",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"let response = pm.response.json();\r",
+											"\r",
+											"pm.globals.set(\"idAssinatura\", response.id);\r",
+											"//pm.globals.set(\"criadoEm\", response.criadoEm);\r",
+											"//pm.globals.set(\"criadoPor\", response.criadoPor);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{assinatura-x-api-key}}",
+										"type": "text"
+									},
+									{
+										"key": "access_token",
+										"value": "{{access-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"CPF\": \"05397673366\",\r\n    \"FormaContatoSMS\": true,\r\n    \"FormaContatoEmail\": false,\r\n    \"EmailId\": 418,\r\n    \"ClienteId\": 5907,\r\n    \"CelularId\": 855,\r\n    \"EnderecoId\": 193026,\r\n    \"Produto\": \"70\",\r\n    \"DestinatarioNome\" : \"MATEUS IRVING VERAS COSTA\",\r\n    \"DestinatarioCPF\" : \"05397673366\",\r\n    \"DestinatarioTelefone\" : \"85999607165\",\r\n    \"Quantidade\": \"1\",\r\n    \"Frequencia\": \"Mensal\",\r\n    \"Duracao\": \"1\",\r\n    \"DiaRecebimento\": \"15\",\r\n    \"FormaRecebimento\": \"Delivery\",\r\n    \"Loja\": \"1\",\r\n    \"Usuario\": \"9008734\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-assinatura}}/assinaturas",
+									"host": [
+										"{{api-gateway-url}}{{route-assinatura}}"
+									],
+									"path": [
+										"assinaturas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-api-key",
+										"type": "text",
+										"value": "{{assinatura-x-api-key}}"
+									},
+									{
+										"key": "access_token",
+										"type": "text",
+										"value": "{{access-token}}"
+									}
+								],
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-assinatura}}/assinaturas/{{idAssinatura}}/token/75f8905f-7b17-4a32-a647-6eafe353f124",
+									"host": [
+										"{{api-gateway-url}}{{route-assinatura}}"
+									],
+									"path": [
+										"assinaturas",
+										"{{idAssinatura}}",
+										"token",
+										"75f8905f-7b17-4a32-a647-6eafe353f124"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Suspender",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "x-api-key",
+										"value": "{{assinatura-x-api-key}}",
+										"type": "text"
+									},
+									{
+										"key": "access_token",
+										"value": "{{access-token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"Usuario\" : \"90078\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-assinatura}}/assinaturas/{{idAssinatura}}/suspender",
+									"host": [
+										"{{api-gateway-url}}{{route-assinatura}}"
+									],
+									"path": [
+										"assinaturas",
+										"{{idAssinatura}}",
+										"suspender"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get By Assinatura Id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {\r",
+											"    pm.response.to.have.status(200);\r",
+											"});\r",
+											"\r",
+											"pm.test(\"Localiza descrição\", function () {\r",
+											"    pm.expect(pm.response.text()).to.include(\"O status da assinatura foi atualizado para [Suspensa]\");\r",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "x-api-key",
+										"type": "text",
+										"value": "{{assinatura-x-api-key}}"
+									},
+									{
+										"key": "access_token",
+										"type": "text",
+										"value": "{{access-token}}"
+									}
+								],
+								"url": {
+									"raw": "{{api-gateway-url}}{{route-assinatura}}/assinaturaocorrencias/assinatura/{{idAssinatura}}",
+									"host": [
+										"{{api-gateway-url}}{{route-assinatura}}"
+									],
+									"path": [
+										"assinaturaocorrencias",
+										"assinatura",
+										"{{idAssinatura}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
